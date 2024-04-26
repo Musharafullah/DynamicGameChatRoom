@@ -1,0 +1,98 @@
+<!-- resources/views/rooms/join.blade.php -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Room: {{ $room->name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            height: 100vh;
+            align-items: stretch;
+        }
+        .user-list {
+            flex: 1;
+            background-color: #f0f0f0;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        .user-list h2 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .chat-interface {
+            flex: 3;
+            background-color: #ffffff;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-box {
+            flex: 1;
+            background-color: #f9f9f9;
+            padding: 10px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        .chat-box p {
+            margin: 5px 0;
+        }
+        .message-input {
+            display: flex;
+            margin-top: 10px;
+        }
+        .message-input input {
+            flex: 1;
+            padding: 5px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .message-input button {
+            padding: 6px 10px;
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Join Room: {{ $room->name }}</h1>
+    <div class="container">
+        <div class="user-list">
+            <h2>Users</h2>
+            <ul id="user-list">
+                <!-- User list will be populated here -->
+            </ul>
+        </div>
+        <div class="chat-interface">
+            <h2>Chat Interface</h2>
+            <div class="chat-box" id="chat-box">
+                <!-- Chat messages will be displayed here -->
+            </div>
+            <form class="message-input" id="chat-form">
+                <input type="text" id="message-input" placeholder="Type your message...">
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Include Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+    <script>
+        // Your Vue.js logic goes here
+    </script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+/* CSS - styles.css */
+.container {
+    display: flex;
+}
+
+.user-list, .chatbox {
+    width: 50%;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.user-list {
+    background-color: #f0f0f0;
+}
+
+.user-list h2 {
+    margin-top: 0;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    margin-bottom: 5px;
+}
+
+.chatbox {
+    overflow-y: auto;
+    height: 400px; /* Adjust as needed */
+}
+
+#messages {
+    margin-bottom: 10px;
+}
+
+#messageInput {
+    width: calc(100% - 80px); /* Adjust as needed */
+    margin-right: 10px;
+}
