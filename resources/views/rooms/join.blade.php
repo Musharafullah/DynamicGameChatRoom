@@ -231,6 +231,24 @@
                 }
             });
         });
+
+        //Ajax call when tab destroy
+        $(window).on('beforeunload', function() {
+            // Send an AJAX request to remove the session data
+            $.ajax({
+                url: '{{ route('remove.session.data') }}',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    console.log('Session data removed successfully');
+                },
+                error: function(xhr, status, error) {
+                    console.error('Failed to remove session data:', error);
+                }
+            });
+        });
     </script>
 </body>
 

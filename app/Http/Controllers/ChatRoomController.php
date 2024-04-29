@@ -10,6 +10,8 @@ use App\Models\Messages;
 use Jenssegers\Agent\Agent;
 use App\Events\NewMessage;
 use Pusher\Pusher;
+use Illuminate\Support\Str;
+
 class ChatRoomController extends Controller
 {
     public function create()
@@ -19,49 +21,61 @@ class ChatRoomController extends Controller
 
     public function store(Request $request)
     {
+
+    }
+    public function playRoom()
+    {
+
+        $lastInsertedId = ChatRoom::latest()->first();
+        return redirect()->route('join.room', $lastInsertedId->code);
+    }
+    public function createRoom(Request $request)
+    {
+
+
         $room = ChatRoom::create([
-        'name' => $request->input('name'),
-        'code' => uniqid() // Generate a unique code for the room
+            // 'name' => $request->input('name'),
+            'code' => Str::random(1) . random_int(1000, 9999) .Str::random(3),
         ]);
         $users = ['avic'];
         // return view('rooms.join', compact('room', 'users'));
         return redirect()->route('join.room', $room->code);
     }
 
-        // Controller logic to fetch room and render Blade template with random user names
+    // Controller logic to fetch room and render Blade template with random user names
     public function join($code, Request $request)
     {
+
 
         $userId = mt_rand(1000, 9999);
         // Store the user ID in the session
         $request->session()->put('user_id', $userId);
-
         // randome name
         $names = ['John', 'Alice', 'Bob', 'Emma', 'Charlie', 'Olivia', 'James', 'Sophia', 'Michael', 'Isabella'];
         $randomIndex = array_rand($names);
         $randomName = $names[$randomIndex];
 
         // end random name
-        $agent = new Agent();
-        $browser = $agent->browser();
-        $platform = $agent->platform();
-        $device = $agent->device();
+            $agent = new Agent();
+            $browser = $agent->browser();
+            $platform = $agent->platform();
+            $device = $agent->device();
         // we cant get the IP address in local .. it will work when the project will live
-        $userIp = $request->ip();
+            $userIp = $request->ip();
         // Fetch the chat room
-        $room = ChatRoom::where('code', $code)->firstOrFail();
+            $room = ChatRoom::where('code', $code)->firstOrFail();
         // Check if the user has already joined this room from the same IP
-        $existingUser = $room->users()->where('user_ip', $userIp)->first();
+            $existingUser = $room->users()->where('user_ip', $userIp)->first();
 
         if (!$existingUser) {
         // User is joining for the first time from this IP, save the details
-        $room->users()->create([
-            'user_ip' => $userIp,
-            'browser' => $browser,
-            'platform' => $platform,
-            'device' => $device,
-            'user_id' => $userId,
-        ]);
+            $room->users()->create([
+                'user_ip' => $userIp,
+                'browser' => $browser,
+                'platform' => $platform,
+                'device' => $device,
+                'user_id' => $userId,
+            ]);
 
             // Increment the count of users in the room
             $room->count++;
@@ -137,6 +151,13 @@ class ChatRoomController extends Controller
         }
 
 
+    }
+    // remove the session value
+    public function removeData(Request $request)
+    {
+        dd("hello");
+        // $request->session()->forget('your_session_key');
+        // return response()->json(['success' => true]);
     }
 
 

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('chat_rooms', function (Blueprint $table) {
             $table->id();
-             $table->string('name');
+             $table->string('name')->nullable();
              $table->string('code')->unique();
              $table->integer('count')->default(1);
             $table->timestamps();
