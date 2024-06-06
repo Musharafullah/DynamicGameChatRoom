@@ -5,6 +5,17 @@
  */
 
 import axios from 'axios';
+import Echo from 'laravel-echo'
+import Pusher from 'pusher-js'
+import VueToast from "vue-toast-notification";
+window.Pusher = Pusher;
+
+window.Echo = new Echo({
+    broadcaster: 'pusher',
+    key: '06309dd11eee2c1d9bd8', // Your Pusher app key
+    cluster: 'ap2', // Your Pusher cluster
+});
+
 window.axios = axios;
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';

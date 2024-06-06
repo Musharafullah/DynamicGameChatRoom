@@ -4,9 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Game Play</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
         integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+
+    <!-- Add lib CSS Below -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/vue-toast-notification@3/dist/theme-sugar.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
     </script>
@@ -68,13 +72,14 @@
         }
 
         .chat-interface {
+            border-color: aquamarine;
+            background: aliceblue;
             flex: 1;
             width: 30rem;
-            background-color: #ffffff;
             padding: 20px;
             box-sizing: border-box;
             overflow-y: auto;
-            border: 1px solid #ccc;
+            border: 2px solid #ccc;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
@@ -133,21 +138,6 @@
     </div>
     <script src="{{ mix('js/app.js') }}"></script>
 
-    <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/feather-icons/feather.min.js') }}"></script>
-    <script src="{{ asset('assets/js/pages/plugins/lord-icon-2.1.0.js') }}"></script>
-    <script src="{{ asset('assets/js/plugins.js') }}"></script>
-
-    <!-- calendar min js -->
-    <script src="{{ asset('assets/libs/fullcalendar/main.min.js') }}"></script>
-
-    <!-- Calendar init -->
-    <script src="{{ asset('assets/js/pages/calendar.init.js') }}"></script>
-
-    <!-- App js -->
-    <script src="{{ asset('assets/js/app.js') }}"></script>
 </body>
 
 </html>

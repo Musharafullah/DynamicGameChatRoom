@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('chat_room_users', function (Blueprint $table) {
             $table->id();
                     $table->foreignId('chat_room_id')->constrained()->onDelete('cascade');
-                    $table->string('user_ip');
-                    $table->string('browser');
-                    $table->string('platform');
-                    $table->string('device');
+                    $table->string('random_name')->nullable();
+                    $table->string('user_ip')->nullable();
+                    $table->string('browser')->nullable();
+                    $table->string('platform')->nullable();
+                    $table->string('device')->nullable();
             $table->timestamps();
         });
     }

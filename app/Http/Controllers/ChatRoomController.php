@@ -8,8 +8,10 @@ use App\Models\ChatRoom;
 use App\Models\ChatRoomUser;
 use App\Models\Messages;
 use Jenssegers\Agent\Agent;
-use App\Events\NewMessage;
 use Pusher\Pusher;
+use App\Events\NewMessage;
+use App\Events\GameMoveEvent;
+
 use Illuminate\Support\Str;
 
 class ChatRoomController extends Controller
@@ -38,127 +40,112 @@ class ChatRoomController extends Controller
             'code' => Str::random(1) . random_int(1000, 9999) .Str::random(3),
         ]);
         $users = ['avic'];
-        // return view('rooms.join', compact('room', 'users'));
-        return redirect()->route('join.room', $room->code);
-    }
 
-    // Controller logic to fetch room and render Blade template with random user names
-    public function join($code, Request $request)
+
+        $data = [
+            'code'=>$room->code,
+
+        ];
+        return response()->json(['data' => $data]);
+    }
+    public function join(Request $request)
     {
 
+        // Check if userId is provided, otherwise generate a random one
+        $userId = $request->userId ?? mt_rand(1000, 9999);
+        // just for temprary - when we will live it then we will get the live IP address
+        $userIp = $userId;
 
-        $userId = mt_rand(1000, 9999);
-        // Store the user ID in the session
-        $request->session()->put('user_id', $userId);
-        // randome name
         $names = ['John', 'Alice', 'Bob', 'Emma', 'Charlie', 'Olivia', 'James', 'Sophia', 'Michael', 'Isabella'];
         $randomIndex = array_rand($names);
         $randomName = $names[$randomIndex];
 
-        // end random name
-            $agent = new Agent();
-            $browser = $agent->browser();
-            $platform = $agent->platform();
-            $device = $agent->device();
-        // we cant get the IP address in local .. it will work when the project will live
-            $userIp = $request->ip();
-        // Fetch the chat room
-            $room = ChatRoom::where('code', $code)->firstOrFail();
-        // Check if the user has already joined this room from the same IP
-            $existingUser = $room->users()->where('user_ip', $userIp)->first();
+        // $userIp = $request->ip();
 
+        $room = ChatRoom::where('code', $request->code)->firstOrFail();
+        $existingUser = $room->users()->where('user_ip', $userIp)->first();
         if (!$existingUser) {
-        // User is joining for the first time from this IP, save the details
             $room->users()->create([
                 'user_ip' => $userIp,
-                'browser' => $browser,
-                'platform' => $platform,
-                'device' => $device,
-                'user_id' => $userId,
+                'random_name' => $randomName,
+                'user_id' => $request->userId,
             ]);
-
-            // Increment the count of users in the room
-            $room->count++;
-            $room->save();
+                $room->count++;
+                $room->save();
+                 $userName = $randomName;
+        }else{
+             $userName = 'abc';
         }
 
-        // Generate random user names
-
-        // Pass data to the view
-        return view('rooms.join', compact('room','randomName'));
+        // Retrieve all users in the room except the current user
+        $userList = $room->users->pluck('random_name')->except($randomName)->toArray();
+        return response()->json([
+            'room' => $room,
+            'usersNames' => $userList,
+            'userName' => $randomName,
+            'userId'=>$userId,
+        ]);
     }
-
-
-    // Helper function to generate random names
-
-    // message
     public function sendMessage(Request $request)
     {
-        // Find the chat room by code
-        $room = ChatRoom::where('code', $request->room_code)->firstOrFail();
 
-        // Retrieve the user ID from the session
-        $userId = $request->session()->get('user_id');
-
-        // Create a new message in the room with the retrieved user ID
-        $message = new Messages();
-        $message->chat_room_id = $room->id;
-        $message->content = $request->message;
-        $message->chat_room_user_id = $userId; // Use the retrieved user ID
-        $message->save();
-
-        // Retrieve all messages belonging to the chat room
-        $messages = Messages::where('chat_room_id', $room->id)->get();
-
-        // Broadcast the new message
-        broadcast(new NewMessage($message))->toOthers();
-
-        // Prepare data to return including the newly sent message and all messages in the chat room
-        $responseData = [
-        'message' => 'Message sent successfully',
-        'all_messages' => $messages, // Add all messages to the response
+        $message = [
+            'code'=>$request->roomId,
+            'userId'=>$request->roomId,
+            'userName'=>$request->userName,
+            'content'=>$request->content,
         ];
 
+                $pusher = new Pusher(
+                env('PUSHER_APP_KEY'),
+                env('PUSHER_APP_SECRET'),
+                env('PUSHER_APP_ID'),
+                [
+                'cluster' => env('PUSHER_APP_CLUSTER'),
+                'useTLS' => true,
+                ]
+                );
+
+                // Trigger an event on a channel
+                $pusher->trigger('tic-tac-toe-channel', 'NewMessage-'.$request->roomId, ['message'=>$message]);
+
+         // Broadcast the new message to the Pusher channel
+         broadcast(new NewMessage($message))->toOthers();
+
+         return response()->json($message);
+
+    }
+    // gamemove
+    public function gamemove(Request $request)
+    {
+
+        // Get the room code and move data from the request
+        $roomId = $request->roomId;
+        $board = $request->board;
+
         // pusher
-           // Pusher credentials from environment variables
-           $pusher = new Pusher(
-           env('PUSHER_APP_KEY'),
-           env('PUSHER_APP_SECRET'),
-           env('PUSHER_APP_ID'),
-           [
-           'cluster' => env('PUSHER_APP_CLUSTER'),
-           'useTLS' => true,
-           ]
-           );
+        // Pusher credentials from environment variables
+        $pusher = new Pusher(
+        env('PUSHER_APP_KEY'),
+        env('PUSHER_APP_SECRET'),
+        env('PUSHER_APP_ID'),
+        [
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'useTLS' => true,
+        ]
+        );
 
-           // Trigger an event on a channel
-           $pusher->trigger('chat-room', 'new-message', ['message' => $message]);
+        // Trigger an event on a channel
+        $pusher->trigger('tic-tac-toe-channel', 'game-move-'.$roomId, ['board'=>$board,
+        'player'=>$request->player]);
 
-        return response()->json($responseData);
+        // Broadcast the game move data to the Pusher channel
+        event(new GameMoveEvent($roomId, $board));
+        // Return a response if necessary
+        return response()->json(['message' => 'Game move broadcasted successfully']);
     }
-    // get messages
-    public function getMessages($roomCode)
-    {
-        // Find the chat room by code
-        $room = ChatRoom::where('code', $roomCode)->firstOrFail();
-        dd($room);
-        // Retrieve messages belonging to the chat room
-        if($room != null)
-        {
-            $messages = $room->messages()->get();
-             // Return the messages as JSON response
-             return response()->json(['all_messages' => $messages]);
-        }
 
 
-    }
-    // remove the session value
-    public function removeData(Request $request)
-    {
-        dd("hello");
-        // $request->session()->forget('your_session_key');
-        // return response()->json(['success' => true]);
-    }
 
 
 

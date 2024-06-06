@@ -2,18 +2,14 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChatRoomController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+ Route::get('/play-game', [ChatRoomController::class, 'playRoom'])->name('playRoom');
+ Route::get('/create-room', [ChatRoomController::class, 'createRoom'])->name('createRoom');
+//  Route::get('/join-room/{code?}', [ChatRoomController::class, 'join'])->name('join.room')->name('join.room');
+ Route::post('/join-room', [ChatRoomController::class, 'join'])->name('join.room')->name('join.room');
+ // chat
+ Route::post('/send-message', [ChatRoomController::class,'sendMessage']);
+ Route::post('/send-game-move', [ChatRoomController::class,'gamemove']);
+//  Route::get('/get-user/{roomCode}', [ChatRoomController::class,'getuser'])->name('get-user');
