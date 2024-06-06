@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ChatRoomUser extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_ip', 'browser', 'platform', 'device'];
+    protected $fillable = ['user_ip','random_name', 'browser', 'platform', 'device'];
     public function chatRoom()
     {
         return $this->belongsTo(ChatRoom::class);

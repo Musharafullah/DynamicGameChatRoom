@@ -20,6 +20,7 @@ class NewMessage
 
     public function __construct($message)
     {
+
         $this->message = $message;
     }
 
@@ -28,8 +29,19 @@ class NewMessage
     *
     * @return array
     */
-    public function broadcastOn()
-    {
-        return ['chat-room.'.$this->message->chat_room_id];
-    }
+
+       public function broadcastOn()
+       {
+       return ['tic-tac-toe-channel'];
+       }
+
+       public function broadcastAs()
+       {
+       return 'game-move-'.$this->message['code'];
+       }
+    // public function broadcastOn()
+    // {
+    //     return ['chat-room.' . $this->message['code']];
+    // }
+
 }
