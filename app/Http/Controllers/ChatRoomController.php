@@ -25,26 +25,32 @@ class ChatRoomController extends Controller
     {
 
     }
-    public function playRoom()
+    public function playRoom(Request $request)
     {
+        $lessthen = '';
+        if($request->roomcode)
+        {
+            $lessthen = ChatRoom::where('code', $request->roomcode)->where('count', '<', 2)->first();
 
-        $lastInsertedId = ChatRoom::latest()->first();
-        return redirect()->route('join.room', $lastInsertedId->code);
+        }
+        else{
+
+            $lessthen = ChatRoom::where('count', '<', 2)->first();
+        }
+        $lessthen->count++;
+        $lessthen->save();
+
+        return response()->json(['data' => $lessthen]);
     }
     public function createRoom(Request $request)
     {
 
 
         $room = ChatRoom::create([
-            // 'name' => $request->input('name'),
             'code' => Str::random(1) . random_int(1000, 9999) .Str::random(3),
         ]);
-        $users = ['avic'];
-
-
         $data = [
             'code'=>$room->code,
-
         ];
         return response()->json(['data' => $data]);
     }
@@ -96,15 +102,15 @@ class ChatRoomController extends Controller
             'content'=>$request->content,
         ];
 
-                $pusher = new Pusher(
-                env('PUSHER_APP_KEY'),
-                env('PUSHER_APP_SECRET'),
-                env('PUSHER_APP_ID'),
-                [
-                'cluster' => env('PUSHER_APP_CLUSTER'),
-                'useTLS' => true,
-                ]
-                );
+            $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            [
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'useTLS' => true,
+            ]
+            );
 
                 // Trigger an event on a channel
                 $pusher->trigger('tic-tac-toe-channel', 'NewMessage-'.$request->roomId, ['message'=>$message]);
@@ -123,8 +129,6 @@ class ChatRoomController extends Controller
         $roomId = $request->roomId;
         $board = $request->board;
 
-        // pusher
-        // Pusher credentials from environment variables
         $pusher = new Pusher(
         env('PUSHER_APP_KEY'),
         env('PUSHER_APP_SECRET'),

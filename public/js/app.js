@@ -20954,7 +20954,12 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: 'Join',
+  name: "Join",
+  data: function data() {
+    return {
+      roomCode: ""
+    };
+  },
   methods: {
     createRoom: function createRoom() {
       var _this = this;
@@ -20964,20 +20969,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) switch (_context.prev = _context.next) {
             case 0:
               _context.prev = 0;
-              localStorage.removeItem('roomCode');
-              localStorage.removeItem('userId');
-              localStorage.removeItem('userName');
-              localStorage.removeItem('ceator');
-              localStorage.removeItem('moveData');
+              localStorage.removeItem("roomCode");
+              localStorage.removeItem("userId");
+              localStorage.removeItem("userName");
+              localStorage.removeItem("ceator");
+              localStorage.removeItem("moveData");
               _context.next = 8;
-              return axios__WEBPACK_IMPORTED_MODULE_0___default().get('/api/create-room');
+              return axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/create-room");
             case 8:
               response = _context.sent;
               code = response.data.data.code;
-              localStorage.setItem('roomCode', code);
-              localStorage.setItem('creator', 'creator');
+              localStorage.setItem("roomCode", code);
+              localStorage.setItem("creator", "creator");
               _this.$router.push({
-                name: 'Join',
+                name: "Join",
                 params: {
                   code: code
                 }
@@ -20996,15 +21001,43 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     playRoom: function playRoom() {
-      // Implement playRoom method functionality if needed
+      var _this2 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+        var result, code;
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/play-game", {
+                roomcode: _this2.roomCode
+              });
+            case 2:
+              result = _context2.sent;
+              code = result.data.data.code;
+              console.warn("da aos result da", result);
+              console.warn("moza ta roghal:", result.data.data.code);
+              localStorage.setItem("creator", "random");
+              localStorage.setItem("roomCode", code);
+              _this2.$router.push({
+                name: "Join",
+                params: {
+                  code: code
+                }
+              });
+            case 9:
+            case "end":
+              return _context2.stop();
+          }
+        }, _callee2);
+      }))();
     }
   },
   mounted: function mounted() {
-    localStorage.removeItem('roomCode');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('userName');
-    localStorage.removeItem('ceator');
-    localStorage.removeItem('moveData');
+    localStorage.removeItem("roomCode");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("ceator");
+    localStorage.removeItem("moveData");
   }
 });
 
@@ -21035,7 +21068,7 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     var _this = this;
     // ----------------------
-    if (localStorage.getItem('creator') === 'creator') {
+    if (localStorage.getItem("creator") === "creator") {
       this.currentPlayer = "X";
       this.turn = "X";
     } else {
@@ -21044,15 +21077,15 @@ __webpack_require__.r(__webpack_exports__);
     }
     // -----------------------
     // Initialize Pusher
-    this.pusher = new Pusher('06309dd11eee2c1d9bd8', {
-      cluster: 'ap2',
+    this.pusher = new Pusher("06309dd11eee2c1d9bd8", {
+      cluster: "ap2",
       encrypted: true
     });
 
     // Subscribe to the channel
-    this.channel = this.pusher.subscribe('tic-tac-toe-channel');
-    this.channel.bind('game-move-' + this.$route.params.code, function (data) {
-      _this.isCreator = localStorage.getItem('creator') === 'creator';
+    this.channel = this.pusher.subscribe("tic-tac-toe-channel");
+    this.channel.bind("game-move-" + this.$route.params.code, function (data) {
+      _this.isCreator = localStorage.getItem("creator") === "creator";
       // Update the game board
       _this.board = data.board;
       if (_this.checkWinner()) {
@@ -21077,7 +21110,7 @@ __webpack_require__.r(__webpack_exports__);
     cellClicked: function cellClicked(rowIndex, colIndex) {
       if (!this.board[rowIndex][colIndex] && !this.winner) {
         // Update current player based
-        console.warn("this.currentPlayer", this.currentPlayer, '===', "this.turn:", this.turn);
+        console.warn("this.currentPlayer", this.currentPlayer, "===", "this.turn:", this.turn);
         if (this.currentPlayer === "X" && this.turn === "X") {
           this.currentPlayer = "X";
           this.turn = "O";
@@ -21090,7 +21123,7 @@ __webpack_require__.r(__webpack_exports__);
           return;
         }
         this.board[rowIndex][colIndex] = this.currentPlayer;
-        this.$emit('game-move-' + this.$route.params.code, {
+        this.$emit("game-move-" + this.$route.params.code, {
           board: this.board
         });
 
@@ -21100,7 +21133,7 @@ __webpack_require__.r(__webpack_exports__);
           board: this.board,
           player: this.turn
         }).then(function (response) {})["catch"](function (error) {
-          console.error('Error sending game board:', error);
+          console.error("Error sending game board:", error);
         });
       }
     },
@@ -21138,7 +21171,7 @@ __webpack_require__.r(__webpack_exports__);
       this.board = [["", "", ""], ["", "", ""], ["", "", ""]];
       this.winner = null;
       this.isDraw = false;
-      this.$emit('game-reset');
+      this.$emit("game-reset");
     }
   },
   computed: {
@@ -21284,14 +21317,31 @@ var _hoisted_1 = {
 var _hoisted_2 = {
   "class": "container"
 };
-var _hoisted_3 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div><label for=\"name\">Name:</label><input type=\"text\" id=\"roomCode\" name=\"name\"></div><div><label for=\"language\">Select Language:</label><select id=\"language\" name=\"language\"><option value=\"english\" selected>English</option><!-- Add more language options here if needed --></select></div>", 2);
+var _hoisted_3 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+  "for": "name"
+}, "Enter code:(if you have)", -1 /* HOISTED */);
+var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+  "for": "language"
+}, "Select Language:"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
+  id: "language",
+  name: "language"
+}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
+  value: "english",
+  selected: ""
+}, "English"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Add more language options here if needed ")])], -1 /* HOISTED */);
 var _hoisted_5 = {
   "class": "d-grid gap-2 mt-4"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [_hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [_hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+    type: "text",
+    "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
+      return $data.roomCode = $event;
+    }),
+    name: "name"
+  }, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.roomCode]])]), _hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     "class": "btn btn-primary",
-    onClick: _cache[0] || (_cache[0] = function () {
+    onClick: _cache[1] || (_cache[1] = function () {
       return $options.playRoom && $options.playRoom.apply($options, arguments);
     })
   }, "Play Game"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
@@ -21299,10 +21349,10 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     style: {
       "margin-left": "10px"
     },
-    onClick: _cache[1] || (_cache[1] = function () {
+    onClick: _cache[2] || (_cache[2] = function () {
       return $options.createRoom && $options.createRoom.apply($options, arguments);
     })
-  }, "Create Room")])])])]);
+  }, " Create Room ")])])])]);
 }
 
 /***/ }),
@@ -21548,7 +21598,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.no-hover[data-v-18b944b9] {\n  pointer-events: none; /* Disable pointer events */\n  background-color: initial !important; /* Reset background color */\n}\n.container[data-v-18b944b9] {\n  min-height: 100vh;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  background: #eee;\n}\n.play-area[data-v-18b944b9] {\n  display: grid;\n  width: 300px;\n  height: 300px;\n  grid-template-columns: auto auto auto;\n}\n.block[data-v-18b944b9] {\n  display: flex;\n  width: 100px;\n  height: 100px;\n  align-items: center;\n  justify-content: center;\n  font-size: 3rem;\n  font-weight: bold;\n  border: 3px solid black;\n  transition: background 0.2s ease-in-out;\n}\n\n /* For unoccupied cells when the creator is the current player */\n.block[data-v-18b944b9]:not(.occupied):hover {\n    cursor: pointer;\n    background: #0ff30f; /* Green hover color */\n}\n\n  /* For occupied cells by the creator */\n.block.occupied[data-v-18b944b9]:hover {\n    background: #ff3a3a; /* Red hover color */\n}\n\n  /* For occupied cells by the other player */\n.block.occupied[data-v-18b944b9]:not(.creator):hover {\n    background: #ff3a3a; /* Red hover color */\n}\n.message[data-v-18b944b9] {\n  font-size: 24px;\n  color: green;\n  margin-top: 10px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.no-hover[data-v-18b944b9] {\n  pointer-events: none; /* Disable pointer events */\n  background-color: initial !important; /* Reset background color */\n}\n.container[data-v-18b944b9] {\n  min-height: 100vh;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  background: #eee;\n}\n.play-area[data-v-18b944b9] {\n  display: grid;\n  width: 300px;\n  height: 300px;\n  grid-template-columns: auto auto auto;\n}\n.block[data-v-18b944b9] {\n  display: flex;\n  width: 100px;\n  height: 100px;\n  align-items: center;\n  justify-content: center;\n  font-size: 3rem;\n  font-weight: bold;\n  border: 3px solid black;\n  transition: background 0.2s ease-in-out;\n}\n\n/* For unoccupied cells when the creator is the current player */\n.block[data-v-18b944b9]:not(.occupied):hover {\n  cursor: pointer;\n  background: #0ff30f; /* Green hover color */\n}\n\n/* For occupied cells by the creator */\n.block.occupied[data-v-18b944b9]:hover {\n  background: #ff3a3a; /* Red hover color */\n}\n\n/* For occupied cells by the other player */\n.block.occupied[data-v-18b944b9]:not(.creator):hover {\n  background: #ff3a3a; /* Red hover color */\n}\n.message[data-v-18b944b9] {\n  font-size: 24px;\n  color: green;\n  margin-top: 10px;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

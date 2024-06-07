@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChatRoomController;
 
 
- Route::get('/play-game', [ChatRoomController::class, 'playRoom'])->name('playRoom');
+ Route::post('/play-game', [ChatRoomController::class, 'playRoom'])->name('playRoom');
  Route::get('/create-room', [ChatRoomController::class, 'createRoom'])->name('createRoom');
 //  Route::get('/join-room/{code?}', [ChatRoomController::class, 'join'])->name('join.room')->name('join.room');
  Route::post('/join-room', [ChatRoomController::class, 'join'])->name('join.room')->name('join.room');

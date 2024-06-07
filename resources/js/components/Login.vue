@@ -3,8 +3,8 @@
     <div class="row py-5 px-5">
       <div class="container">
         <div>
-          <label for="name">Name:</label>
-          <input type="text" id="roomCode" name="name" />
+          <label for="name">Enter code:(if you have)</label>
+          <input type="text" v-model="roomCode" name="name" />
         </div>
         <div>
           <label for="language">Select Language:</label>
@@ -33,7 +33,11 @@ import axios from "axios";
 
 export default {
   name: "Join",
-
+  data() {
+    return {
+      roomCode: "",
+    };
+  },
   methods: {
     async createRoom() {
       try {
@@ -42,7 +46,6 @@ export default {
         localStorage.removeItem("userName");
         localStorage.removeItem("ceator");
         localStorage.removeItem("moveData");
-
         const response = await axios.get("/api/create-room");
         const code = response.data.data.code;
         localStorage.setItem("roomCode", code);
@@ -52,8 +55,16 @@ export default {
         console.error("Error:", error);
       }
     },
-    playRoom() {
-      // Implement playRoom method functionality if needed
+    async playRoom() {
+      const result = await axios.post("/api/play-game", {
+        roomcode: this.roomCode,
+      });
+      const code = result.data.data.code;
+      console.warn("da aos result da", result);
+      console.warn("moza ta roghal:", result.data.data.code);
+      localStorage.setItem("creator", "random");
+      localStorage.setItem("roomCode", code);
+      this.$router.push({ name: "Join", params: { code } });
     },
   },
   mounted() {
