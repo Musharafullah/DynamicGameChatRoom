@@ -42,7 +42,6 @@ export default {
         localStorage.removeItem("userName");
         localStorage.removeItem("ceator");
         localStorage.removeItem("moveData");
-
         const response = await axios.get("/api/create-room");
         const code = response.data.data.code;
         localStorage.setItem("roomCode", code);
@@ -52,8 +51,14 @@ export default {
         console.error("Error:", error);
       }
     },
-    playRoom() {
-      // Implement playRoom method functionality if needed
+    async playRoom() {
+      const result = await axios.get("/api/play-game");
+      const code = result.data.data.code;
+
+      console.warn("moza ta roghal:", result.data.data.code);
+      localStorage.setItem("creator", "random");
+      localStorage.setItem("roomCode", code);
+      this.$router.push({ name: "Join", params: { code } });
     },
   },
   mounted() {

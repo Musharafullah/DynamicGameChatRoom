@@ -20811,32 +20811,32 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: 'Join',
+  name: "Join",
   //game component will be here
   components: {
-    'TicTacToeGame': _TicTacToeGame_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
+    TicTacToeGame: _TicTacToeGame_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   data: function data() {
     return {
-      roomName: '',
-      userId: '',
+      roomName: "",
+      userId: "",
       room: {},
       // Object to store room data
       userList: [],
       // Array to store user list
       messages: [],
-      messageInput: '' // Input field for sending messages
+      messageInput: "" // Input field for sending messages
     };
   },
   created: function created() {
     var _this = this;
     this.fetchRoomData();
     (pusher_js__WEBPACK_IMPORTED_MODULE_3___default().logToConsole) = false;
-    this.pusher = new (pusher_js__WEBPACK_IMPORTED_MODULE_3___default())('06309dd11eee2c1d9bd8', {
-      cluster: 'ap2'
+    this.pusher = new (pusher_js__WEBPACK_IMPORTED_MODULE_3___default())("06309dd11eee2c1d9bd8", {
+      cluster: "ap2"
     });
     this.channel = this.pusher.subscribe("tic-tac-toe-channel");
-    this.channel.bind('NewMessage-' + this.$route.params.code, function (data) {
+    this.channel.bind("NewMessage-" + this.$route.params.code, function (data) {
       // console.log("Received new message:", data); // console the data
       var messageData = data.message;
       var userId = messageData.userId;
@@ -20853,71 +20853,71 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     copyLink: function copyLink() {
       // Generate the URL based on room.code
-      var referralLink = 'http://127.0.0.1:8000/join-room/' + this.$route.params.code;
+      var referralLink = "http://127.0.0.1:8000/join-room/" + this.$route.params.code;
       // Create a temporary input element
-      var tempInput = document.createElement('input');
+      var tempInput = document.createElement("input");
       tempInput.value = referralLink;
       document.body.appendChild(tempInput);
       // Select the input value
       tempInput.select();
       tempInput.setSelectionRange(0, 99999); // For mobile devices
       // Copy the selected text
-      document.execCommand('copy');
+      document.execCommand("copy");
       // Remove the temporary input
       document.body.removeChild(tempInput);
       // Optionally, provide feedback to the user
-      alert('Link copied to clipboard!');
+      alert("Link copied to clipboard!");
     },
     fetchRoomData: function fetchRoomData() {
       var _this2 = this;
       // Fetch room data using Axios
       var code = this.$route.params.code;
       this.roomName = code;
-      localStorage.setItem('roomCode', code); // Store the code in local storage
-      this.userId = localStorage.getItem('userId');
+      localStorage.setItem("roomCode", code); // Store the code in local storage
+      this.userId = localStorage.getItem("userId");
       //   axios.get(`/api/join-room/${this.$route.params.code}`)
       var result = axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/join-room/", {
-        'code': code,
-        'userId': this.userId
+        code: code,
+        userId: this.userId
       }).then(function (response) {
         _this2.userId = response.data.userId;
-        localStorage.setItem('userId', _this2.userId);
-        if (localStorage.getItem('creator') === 'creator') {
-          localStorage.setItem('userName', response.data.usersNames[0]);
-          localStorage.setItem('creatorName', response.data.usersNames[0]);
+        localStorage.setItem("userId", _this2.userId);
+        if (localStorage.getItem("creator") === "creator") {
+          localStorage.setItem("userName", response.data.usersNames[0]);
+          localStorage.setItem("creatorName", response.data.usersNames[0]);
         } else {
-          localStorage.setItem('userName', response.data.usersNames[1]);
-          localStorage.setItem('joinerName', response.data.usersNames[1]);
+          localStorage.setItem("userName", response.data.usersNames[1]);
+          localStorage.setItem("joinerName", response.data.usersNames[1]);
         }
         _this2.room = response.data.room;
         _this2.userList = response.data.usersNames;
       })["catch"](function (error) {
-        console.error('Error fetching room data:', error);
+        console.error("Error fetching room data:", error);
       });
     },
     // send message
     sendMessage: function sendMessage() {
       // Retrieve user ID from local storage
-      var userId = localStorage.getItem('userId');
+      var userId = localStorage.getItem("userId");
       axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/send-message", {
         userId: userId,
-        userName: localStorage.getItem('userName'),
+        userName: localStorage.getItem("userName"),
         roomId: this.$route.params.code,
         content: this.messageInput
       }).then(function (response) {
         // Optional: Handle successful response if needed
       })["catch"](function (error) {
-        console.error('Error sending message:', error);
+        console.error("Error sending message:", error);
       });
 
       // Clear message input after sending
-      this.messageInput = '';
+      this.messageInput = "";
     }
   },
   mounted: function mounted() {
     var _this3 = this;
-    localStorage.removeItem('userId');
-    localStorage.removeItem('userName');
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userName");
     // Automatically scroll to bottom when component is mounted or messages array changes
     this.$watch(function () {
       return _this3.messages;
@@ -20954,7 +20954,7 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: 'Join',
+  name: "Join",
   methods: {
     createRoom: function createRoom() {
       var _this = this;
@@ -20964,20 +20964,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) switch (_context.prev = _context.next) {
             case 0:
               _context.prev = 0;
-              localStorage.removeItem('roomCode');
-              localStorage.removeItem('userId');
-              localStorage.removeItem('userName');
-              localStorage.removeItem('ceator');
-              localStorage.removeItem('moveData');
+              localStorage.removeItem("roomCode");
+              localStorage.removeItem("userId");
+              localStorage.removeItem("userName");
+              localStorage.removeItem("ceator");
+              localStorage.removeItem("moveData");
               _context.next = 8;
-              return axios__WEBPACK_IMPORTED_MODULE_0___default().get('/api/create-room');
+              return axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/create-room");
             case 8:
               response = _context.sent;
               code = response.data.data.code;
-              localStorage.setItem('roomCode', code);
-              localStorage.setItem('creator', 'creator');
+              localStorage.setItem("roomCode", code);
+              localStorage.setItem("creator", "creator");
               _this.$router.push({
-                name: 'Join',
+                name: "Join",
                 params: {
                   code: code
                 }
@@ -20996,15 +20996,40 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     playRoom: function playRoom() {
-      // Implement playRoom method functionality if needed
+      var _this2 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+        var result, code;
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/play-game");
+            case 2:
+              result = _context2.sent;
+              code = result.data.data.code;
+              console.warn("moza ta roghal:", result.data.data.code);
+              localStorage.setItem("creator", "random");
+              localStorage.setItem("roomCode", code);
+              _this2.$router.push({
+                name: "Join",
+                params: {
+                  code: code
+                }
+              });
+            case 8:
+            case "end":
+              return _context2.stop();
+          }
+        }, _callee2);
+      }))();
     }
   },
   mounted: function mounted() {
-    localStorage.removeItem('roomCode');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('userName');
-    localStorage.removeItem('ceator');
-    localStorage.removeItem('moveData');
+    localStorage.removeItem("roomCode");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("ceator");
+    localStorage.removeItem("moveData");
   }
 });
 
@@ -21302,7 +21327,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[1] || (_cache[1] = function () {
       return $options.createRoom && $options.createRoom.apply($options, arguments);
     })
-  }, "Create Room")])])])]);
+  }, " Create Room ")])])])]);
 }
 
 /***/ }),

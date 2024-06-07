@@ -18,8 +18,8 @@ class GameMoveEvent
 
    public function __construct($roomId, $board)
    {
-   $this->roomId = $roomId;
-   $this->board = $board;
+        $this->roomId = $roomId;
+        $this->board = $board;
    }
 
    public function broadcastOn()

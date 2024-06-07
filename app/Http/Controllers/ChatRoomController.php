@@ -28,8 +28,9 @@ class ChatRoomController extends Controller
     public function playRoom()
     {
 
-        $lastInsertedId = ChatRoom::latest()->first();
-        return redirect()->route('join.room', $lastInsertedId->code);
+        // $lastInsertedId = ChatRoom::latest()->first();
+        $lessthen = ChatRoom::where('count', '<', 2)->first();
+        return response()->json(['data' => $lessthen]);
     }
     public function createRoom(Request $request)
     {
@@ -38,8 +39,9 @@ class ChatRoomController extends Controller
         $room = ChatRoom::create([
             // 'name' => $request->input('name'),
             'code' => Str::random(1) . random_int(1000, 9999) .Str::random(3),
+
         ]);
-        $users = ['avic'];
+        // $users = ['avic'];
 
 
         $data = [
